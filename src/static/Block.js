@@ -1,4 +1,16 @@
-const RUN_BLOCK_EVENT = new Event('run');
+// ---------------------------------- EVENTS -----------------------------------
+
+export const BlockRanEvent = () => new CustomEvent('blockRun');
+
+export const BlockRemovedEvent = (parentBlock, removedBlock) => new CustomEvent(
+  'blockRemoved', { detail: { parentBlock, removedBlock } },
+);
+
+export const BlockMovedEvent = (fromBlock, toBlock) => new CustomEvent(
+  'blockMoved', { detail: { fromBlock, toBlock } },
+);
+
+// --------------------------------- BLOCK API ---------------------------------
 
 /**
  * @function
@@ -9,7 +21,8 @@ export function CreateBlock(name, value, contents) {
     'div', { class: 'block', draggable: true, 'data-name': name }, [name],
   );
 
-  // Ensures that the block has a value before attaching it to the current block.
+  // Ensures that the block has a value before attaching it to the current
+  // block.
   if (value !== undefined && value !== null) {
     const child = Element('input', { type: 'number', value });
     block.appendChild(child);
@@ -89,5 +102,5 @@ export function ConvertBlockToScript(block) {
  * @description Runs a set of blocks.
  */
 export function RunBlocks(blocks) {
-  blocks.forEach((block) => { block.dispatchEvent(RUN_BLOCK_EVENT); });
+  blocks.forEach((block) => { block.dispatchEvent(BlockRanEvent); });
 }
