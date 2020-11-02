@@ -6,8 +6,8 @@ import {
 const MENU = document.querySelector('.menu');
 const SCRIPT = document.querySelector('.script');
 
+let SCRIPT_MODIFIED = false;
 const SCRIPT_REGISTRY = {};
-const SCRIPT_MODIFIED = false;
 
 /**
  * @function
@@ -16,6 +16,10 @@ const SCRIPT_MODIFIED = false;
  */
 export function RunSoon() { SCRIPT_MODIFIED = true; }
 
+/**
+ * @function
+ * @description The primary run loop that
+ */
 export function Run() {
   if (SCRIPT_MODIFIED) {
     SCRIPT_MODIFIED = false;
@@ -24,12 +28,16 @@ export function Run() {
     SCRIPT.dispatchEvent('afterRun');
     RunBlocks(blocks);
   } else {
-    SCRIPT.trigger('everyFrame');
+    SCRIPT.dispatchEvent('everyFrame');
   }
 
   requestAnimationFrame(Run);
 }
 
+/**
+ * @function
+ * @description Runs each block.
+ */
 export function RunEach(event) {
   const element = event.target;
 
@@ -47,6 +55,10 @@ export function RunEach(event) {
   element.classList.remove('running');
 }
 
+/**
+ * @function
+ * @description Create items that can be turned into blocks on the menu.
+ */
 function CreateMenuItem(name, blockFn, value, units) {
   const item = CreateBlock(name, value, units);
   SCRIPT_REGISTRY[name] = blockFn;
@@ -55,6 +67,10 @@ function CreateMenuItem(name, blockFn, value, units) {
   return item;
 }
 
+/**
+ * @function
+ * @description Repeats the action of a block for as many units as it stores.
+ */
 function Repeat(block) {
   const count = RetrieveBlockValue(block);
   const children = RetrieveBlockContents(block);
